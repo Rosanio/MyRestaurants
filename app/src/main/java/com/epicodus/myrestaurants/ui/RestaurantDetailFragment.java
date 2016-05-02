@@ -10,9 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.epicodus.myrestaurants.Constants;
 import com.epicodus.myrestaurants.R;
 import com.epicodus.myrestaurants.models.Restaurant;
+import com.firebase.client.Firebase;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
@@ -69,6 +72,7 @@ public class RestaurantDetailFragment extends Fragment implements View.OnClickLi
         mWebsiteLabel.setOnClickListener(this);
         mPhoneLabel.setOnClickListener(this);
         mAddressLabel.setOnClickListener(this);
+        mSaveRestaurantButton.setOnClickListener(this);
         return view;
     }
 
@@ -86,6 +90,11 @@ public class RestaurantDetailFragment extends Fragment implements View.OnClickLi
             case R.id.addressTextView:
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"+mRestaurant.getLatitude()+","+mRestaurant.getLongitude()+"?q=("+mRestaurant.getName()+")"));
                 startActivity(mapIntent);
+                break;
+            case R.id.saveRestaurantButton:
+                Firebase ref = new Firebase(Constants.FIREBASE_URL_RESTAURANTS);
+                ref.push().setValue(mRestaurant);
+                Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
