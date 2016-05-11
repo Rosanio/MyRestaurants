@@ -1,6 +1,7 @@
 package com.epicodus.myrestaurants.ui;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -19,6 +20,7 @@ import com.epicodus.myrestaurants.R;
 import com.epicodus.myrestaurants.adapters.RestaurantListAdapter;
 import com.epicodus.myrestaurants.models.Restaurant;
 import com.epicodus.myrestaurants.services.YelpService;
+import com.epicodus.myrestaurants.util.OnRestaurantSelectedListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,6 +40,8 @@ public class RestaurantListFragment extends BaseFragment {
     private String mRecentAddress;
     private RestaurantListAdapter mAdapter;
     public ArrayList<Restaurant> mRestaurants = new ArrayList<>();
+
+    OnRestaurantSelectedListener mOnRestaurantSelectedListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +73,7 @@ public class RestaurantListFragment extends BaseFragment {
                     // because fragments do not have own context, and must inherit from corresponding activity.
                     @Override
                     public void run() {
-                        mAdapter = new RestaurantListAdapter(getActivity(), mRestaurants);
+                        mAdapter = new RestaurantListAdapter(mRestaurants, mOnRestaurantSelectedListener);
                         // Line above states `getActivity()` instead of previous
                         // 'getApplicationContext()' because fragments do not have own context,
                         // must instead inherit it from corresponding activity.
@@ -135,6 +139,16 @@ public class RestaurantListFragment extends BaseFragment {
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mOnRestaurantSelectedListener = (OnRestaurantSelectedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + e.getMessage());
+        }
     }
 
 }
