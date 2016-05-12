@@ -24,7 +24,7 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class CreateAccountActivity extends AppCompatActivity implements View.OnClickListener {
+public class CreateAccountActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = CreateAccountActivity.class.getSimpleName();
     @Bind(R.id.createUserButton)
     Button mCreateUserButton;
@@ -35,20 +35,13 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
     EditText mConfirmPasswordEditText;
     @Bind(R.id.loginTextView)
     TextView mLoginTextView;
-    private Firebase mFirebaseRef;
-    private SharedPreferences.Editor mSharedPreferencesEditor;
-    private SharedPreferences mSharedPreferences;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
         ButterKnife.bind(this);
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mSharedPreferencesEditor = mSharedPreferences.edit();
-
-        mFirebaseRef = new Firebase(Constants.FIREBASE_URL);
         mCreateUserButton.setOnClickListener(this);
     }
 
@@ -81,7 +74,7 @@ public class CreateAccountActivity extends AppCompatActivity implements View.OnC
                     public void onAuthenticated(AuthData authData) {
                         if (authData != null) {
                             String userUid = authData.getUid();
-                            mSharedPreferencesEditor.putString(Constants.KEY_UID, userUid).apply();
+                            mEditor.putString(Constants.KEY_UID, userUid).apply();
                             Intent intent = new Intent(CreateAccountActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);

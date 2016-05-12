@@ -22,7 +22,7 @@ import com.firebase.client.FirebaseError;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
     public static final String TAG = LoginActivity.class.getSimpleName();
     @Bind(R.id.passwordLoginButton)
     Button mPasswordLoginButton;
@@ -30,20 +30,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Bind(R.id.passwordEditText)
     EditText mPasswordEditText;
     @Bind(R.id.registerTextView) TextView mRegisterTextView;
-    private Firebase mFirebaseRef;
-    private SharedPreferences mSharedPreferences;
-    private SharedPreferences.Editor mSharedPreferencesEditor;
     private ProgressDialog mAuthProgressDialog;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-        mSharedPreferencesEditor = mSharedPreferences.edit();
-        mFirebaseRef = new Firebase(Constants.FIREBASE_URL);
         mPasswordLoginButton.setOnClickListener(this);
 
         mAuthProgressDialog = new ProgressDialog(this);
@@ -89,10 +83,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onAuthenticated(AuthData authData) {
                 mAuthProgressDialog.dismiss();
-                mSharedPreferencesEditor.putString(Constants.KEY_USER_EMAIL, email).apply();
+                mEditor.putString(Constants.KEY_USER_EMAIL, email).apply();
                 if (authData != null) {
                     String userUid = authData.getUid();
-                    mSharedPreferencesEditor.putString(Constants.KEY_UID, userUid).apply();
+                    mEditor.putString(Constants.KEY_UID, userUid).apply();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
